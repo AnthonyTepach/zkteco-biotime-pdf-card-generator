@@ -3,7 +3,7 @@ import Hero from "@/app/components/Hero";
 import TableUser from "@/app/components/TableUser";
 
 const fetchPunchTime = (type) => {
-  const url = `http://localhost:3000/api/consulta?departamento=${type}&fecha_inicio=2023-10-01&fecha_fin=2023-10-16`;
+  const url = `http://localhost:3000/api/consulta?departamento=${type}&fecha_inicio=2023-11-01&fecha_fin=2023-11-16`;
 
   return fetch(url).then((res) => res.json());
 };
@@ -101,7 +101,7 @@ export default async function PerType({ params }) {
                         scope="col"
                         className="pl-6 lg:pl-3 xl:pl-0 pr-6 py-3 text-left"
                       >
-                        <div className="flex items-center gap-x-2">
+                        <div className="flex items-center gap-x-2 ml-4">
                           <span className="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-200">
                             Nombre Completo
                           </span>
@@ -143,7 +143,7 @@ export default async function PerType({ params }) {
                           <div className="pl-6 lg:pl-3 xl:pl-0 pr-6 py-3">
                             <div className="flex items-center gap-x-3">
                               <img
-                                className="inline-block h-[2.375rem] w-[2.375rem] rounded-full"
+                                className="inline-block h-[2.375rem] w-[2.375rem] rounded-full ml-4"
                                 src={`http://192.168.1.8:8080/files/photo/${punch.emp_code}.jpg`}
                                 alt="Image Description"
                               />
@@ -236,7 +236,7 @@ export default async function PerType({ params }) {
                           viewBox="0 0 16 16"
                         >
                           <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"
                           />
                         </svg>
@@ -257,7 +257,7 @@ export default async function PerType({ params }) {
                           viewBox="0 0 16 16"
                         >
                           <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
                           />
                         </svg>

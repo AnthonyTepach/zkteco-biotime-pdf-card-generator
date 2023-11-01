@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
       <body className={`${inter.classNameName} bg-gray-50 dark:bg-slate-900`}>
         <SlideBarToogle />
         <Sliderbar />
-        <div class="w-full pt-10 px-4 sm:px-6 md:px-8 lg:pl-72">
+        <div className="w-full pt-10 px-4 sm:px-6 md:px-8 lg:pl-72">
         
         { children }
         </div>
