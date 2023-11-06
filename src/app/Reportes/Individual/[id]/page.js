@@ -1,23 +1,11 @@
-const fetchPunchTime = (emp_code) => {
-  const url = `http://${process.env.API_HOST}:${process.env.API_PORT}/api/employee/${emp_code}?fecha_inicio=2023-10-19&fecha_fin=2023-10-28`;
+import {fetchEmployeePunchTime} from "@/app/services/biotimepro";
+import {convertirFechaTexto} from "@/app/services/dateUtils";
 
-  return fetch(url).then((res) => res.json());
-};
-function convertirFechaAFechaTexto(fecha) {
-  const fechaObj = new Date(fecha);
-  const opciones = {
-    timeZone: "UTC",
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  };
-  return fechaObj.toLocaleDateString("es-MX", opciones);
-}
 export default async function Individual({ params }) {
+
   const { id } = params;
-  const punchs = await fetchPunchTime(id);
-  const img_emp = `http://${process.env.PHOTO_HOST}:${process.env.PHOTO_PORT}/files/photo/${id}.jpg`;
+  const punchs = await fetchEmployeePunchTime(id,"2023-11-01","2023-11-03");
+  const img_emp = `http://${process.env.PHOTO_HOST}:${process.env.PHOTO_PORT}/${process.env.PHOTO_ROUTE}/${id}.jpg`;
 
   return (
     <>
@@ -162,7 +150,7 @@ export default async function Individual({ params }) {
                                   {index + 1}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                  {convertirFechaAFechaTexto(time.fecha)}
+                                  {convertirFechaTexto(time.fecha)}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                   {time.hora}
