@@ -1,5 +1,5 @@
 const fetchPunchTime = (emp_code) => {
-  const url = `http://localhost:3000/api/employee/${emp_code}?fecha_inicio=2023-10-19&fecha_fin=2023-10-28`;
+  const url = `http://${process.env.API_HOST}:${process.env.API_PORT}/api/employee/${emp_code}?fecha_inicio=2023-10-19&fecha_fin=2023-10-28`;
 
   return fetch(url).then((res) => res.json());
 };
@@ -17,7 +17,7 @@ function convertirFechaAFechaTexto(fecha) {
 export default async function Individual({ params }) {
   const { id } = params;
   const punchs = await fetchPunchTime(id);
-  const img_emp = `http://192.168.1.8:8080/files/photo/${id}.jpg`;
+  const img_emp = `http://${process.env.PHOTO_HOST}:${process.env.PHOTO_PORT}/files/photo/${id}.jpg`;
 
   return (
     <>
