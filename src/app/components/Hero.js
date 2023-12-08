@@ -2,10 +2,21 @@
 
 import React, { useState } from 'react';
 import swal from 'sweetalert';
-export default function Hero(){
+import PunchTable from "@/app/components/PunchTable";
+
+import {fetchPunchTime} from '../services/biotimepro'
+
+
+
+
+
+
+export default  function  Hero ({ type }){
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [punchs, setPunchs] = useState(null); // Estado para almacenar los datos
+  const [showPunchTable, setShowPunchTable] = useState(false); 
 
   const handleStartDateChange = (event) => {
     const selectedStartDate = event.target.value;
@@ -17,14 +28,21 @@ export default function Hero(){
     setEndDate(selectedEndDate);
   };
 
-  const handleSearch = () => {
-    if (startDate && endDate && (startDate <= endDate)) {
-      // Realiza la acción deseada con las fechas seleccionadas
-      console.log('Fecha Inicial:', startDate);
-      console.log('Fecha Final:', endDate);
+  const handleSearch = async () => {
+    if (startDate && endDate && startDate <= endDate) {
+      try {
+        // Realiza la acción deseada con las fechas seleccionadas
+        const data = await fetchPunchTime(type, startDate, endDate);
+        setPunchs(data); // Actualiza el estado con los datos
+        setShowPunchTable(true); // Muestra PunchTable
+      } catch (error) {
+        console.error('Error al cargar los datos', error);
+        setShowPunchTable(false); // Oculta PunchTable en caso de error
+      }
     } else {
       // Muestra un mensaje de error si las fechas son inválidas
-      swal ( "Error" ,  "Las fechas son inválidas.La fecha final debe ser mayor que la fecha inicial." ,  "error" )
+      swal("Error", "Las fechas son inválidas. La fecha final debe ser mayor que la fecha inicial.", "error");
+      setShowPunchTable(false); // Oculta PunchTable en caso de fechas inválidas
     }
   };
 
@@ -56,7 +74,21 @@ export default function Hero(){
                     src={`http://192.168.1.8:8080/files/photo/765.jpg`}
                     alt="Image Description"
                   />
-
+                  <img
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
+                    src={`http://192.168.1.8:8080/files/photo/1402.jpg`}
+                    alt="Image Description"
+                  />
+                  <img
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
+                    src={`http://192.168.1.8:8080/files/photo/1417.jpg`}
+                    alt="Image Description"
+                  />
+                  <img
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
+                    src={`http://192.168.1.8:8080/files/photo/15.jpg`}
+                    alt="Image Description"
+                  />
                   <span className="inline-flex items-center justify-center h-8 w-8 rounded-full ring-2 ring-white bg-gray-800 dark:bg-gray-900 dark:ring-gray-800">
                     <span className="text-xs font-medium leading-none text-white uppercase">
                       7k+
@@ -179,7 +211,15 @@ export default function Hero(){
           </div>
         </div>
       </div>
+      {showPunchTable && punchs && (
+        <PunchTable
+          punchs={punchs}
+          type={type}
+          date_one={startDate}
+          date_two={endDate}
+        />
+      )}
     </>
-  )
+  );
 }
 

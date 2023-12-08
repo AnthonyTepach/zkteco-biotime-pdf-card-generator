@@ -1,8 +1,117 @@
 // PunchTable.js
 import React from 'react';
+import {convertirFechaTexto} from "@/app/services/dateUtils";
+import {fetchPunchTime} from '../services/biotimepro'
+import XLSX from 'xlsx';
 
-const PunchTable = ({ punchs,type}) => {
+const PunchTable = ({ punchs,type,date_one,date_two}) => {
+  
     const numberOfRecords = punchs.length;
+    const downloadJSON = async () => {
+      try {
+        // Supongamos que fetchPunchTime retorna el JSON que deseas descargar
+        const data = await fetchPunchTime(type, date_one, date_two);
+    
+        // Verifica si la respuesta contiene datos
+        if (!data) {
+          console.error('No se obtuvieron datos del servidor.');
+          return;
+        }
+    
+        // Convierte los datos a una cadena JSON con formato legible
+        const jsonString = JSON.stringify(data, null, 2);
+    
+        // Crea un objeto Blob con los datos JSON
+        const blob = new Blob([jsonString], { type: 'application/json' });
+    
+        // Crea una URL para el Blob
+        const url = window.URL.createObjectURL(blob);
+    
+        // Crea un enlace de descarga y simula un clic para iniciar la descarga
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${type}_${date_one}_TO_${date_two}.json`; // Puedes cambiar el nombre del archivo según tu preferencia
+        document.body.appendChild(a);
+        a.click();
+    
+        // Libera los recursos después de la descarga
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } catch (error) {
+        console.error('Error al descargar el archivo JSON:', error);
+      }
+    }
+    const downloadCSV = async () => {
+      try {
+        // Supongamos que fetchPunchTime retorna el JSON que deseas descargar
+        const data = await fetchPunchTime(type, date_one, date_two);
+    
+        // Verifica si la respuesta contiene datos
+        if (!data) {
+          console.error('No se obtuvieron datos del servidor.');
+          return;
+        }
+    
+        // Convierte los datos a formato CSV
+        const csvData = convertToCSV(data);
+    
+        // Crea un objeto Blob con los datos CSV
+        const blob = new Blob([csvData], { type: 'text/csv' });
+    
+        // Crea una URL para el Blob
+        const url = window.URL.createObjectURL(blob);
+    
+        // Crea un enlace de descarga y simula un clic para iniciar la descarga
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${type}_${date_one}_TO_${date_two}.csv`; // Puedes cambiar el nombre del archivo según tu preferencia
+        document.body.appendChild(a);
+        a.click();
+    
+        // Libera los recursos después de la descarga
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } catch (error) {
+        console.error('Error al descargar el archivo CSV:', error);
+      }
+    };
+    
+    // Función para convertir datos a formato CSV
+    const convertToCSV = (data) => {
+      // Encabezados
+      const headers = ["N° Empleado", "Nombre(s)", "Apellidos", "Area", "Tipo","Dia Semana", "Fecha", "H1", "H2", "H3", "H4"];
+    
+      // Filas de datos
+      const rows = data.reduce((accumulator, entry) => {
+        const punchTimes = entry.punch_times.reduce((punchAccumulator, punch) => {
+          punchAccumulator[punch.fecha] = punchAccumulator[punch.fecha] || [];
+          punchAccumulator[punch.fecha].push(punch.hora);
+          return punchAccumulator;
+        }, {});
+    
+        Object.keys(punchTimes).forEach((fecha) => {
+          accumulator.push([
+            entry.emp_code,
+            entry.first_name,
+            entry.last_name,
+            entry.position_name,
+            entry.dept_name,
+            convertirFechaTexto(fecha),
+            ...punchTimes[fecha]
+          ]);
+        });
+    
+        return accumulator;
+      }, []);
+    
+      // Agregar encabezados a la primera fila
+      rows.unshift(headers);
+    
+      // Convertir a cadena CSV
+      return rows.map(row => row.join(',')).join('\n');
+    };
+    
+    
   return (
     <>
       <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
@@ -13,16 +122,17 @@ const PunchTable = ({ punchs,type}) => {
                 <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200 dark:border-gray-700">
                   <div>
                     <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                      Regitro de entradas y salidas
+                      Regitro de entradas y salidas ({type})
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {type}
+                      {`${convertirFechaTexto(date_one)}`} <strong>al</strong> {convertirFechaTexto(date_two)} 
                     </p>
                   </div>
 
                   <div>
                     <div className="inline-flex gap-x-2">
                       <a
+                        onClick={downloadJSON}
                         className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
                         href="#"
                       >
@@ -32,7 +142,7 @@ const PunchTable = ({ punchs,type}) => {
                           height="20"
                           viewBox="0 0 24 24"
                           fill="none"
-                          stroke="#fff"
+                          stroke="currentColor"
                           strokeWidth="1"
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -42,6 +152,7 @@ const PunchTable = ({ punchs,type}) => {
                         JSON
                       </a>
                       <a
+                        onClick={downloadCSV}
                         className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
                         href="#"
                       >
@@ -51,7 +162,7 @@ const PunchTable = ({ punchs,type}) => {
                           height="20"
                           viewBox="0 0 24 24"
                           fill="none"
-                          stroke="#fff"
+                          stroke="currentColor"
                           strokeWidth="1"
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -70,7 +181,7 @@ const PunchTable = ({ punchs,type}) => {
                           height="20"
                           viewBox="0 0 24 24"
                           fill="none"
-                          stroke="#fff"
+                          stroke="currentColor"
                           strokeWidth="1"
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -126,7 +237,8 @@ const PunchTable = ({ punchs,type}) => {
                   </thead>
 
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                    {punchs.map((punch) => (
+                    {
+                      punchs.map((punch) => (
                       <tr>
                         <td className="h-px w-px whitespace-nowrap">
                           <div className="pl-6 lg:pl-3 xl:pl-0 pr-6 py-3">
@@ -186,9 +298,9 @@ const PunchTable = ({ punchs,type}) => {
 
                         <td className="h-px w-px whitespace-nowrap">
                           <div className="px-6 py-1.5">
-                            <a
-                              className="inline-flex items-center gap-x-1.5 text-sm text-gray-100 decoration-2 hover:underline font-medium"
-                              href={`/Reportes/Individual/${punch.emp_code}`}
+                            {/* <a
+                              className="inline-flex items-center gap-x-1.5 text-sm text-gray-500 decoration-2 hover:underline font-medium"
+                              
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -196,7 +308,7 @@ const PunchTable = ({ punchs,type}) => {
                                 height="20"
                                 viewBox="0 0 24 24"
                                 fill="none"
-                                stroke="#ffffff"
+                                stroke="currentColor"
                                 strokeWidth="1.5"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -205,7 +317,7 @@ const PunchTable = ({ punchs,type}) => {
                                 <circle cx="12" cy="12" r="3"></circle>
                               </svg>
                               Ver más
-                            </a>
+                            </a> */}
                           </div>
                         </td>
                       </tr>
@@ -223,49 +335,7 @@ const PunchTable = ({ punchs,type}) => {
                     </p>
                   </div>
 
-                  <div>
-                    <div className="inline-flex gap-x-2">
-                      <button
-                        type="button"
-                        className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
-                      >
-                        <svg
-                          className="w-3 h-3"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          viewBox="0 0 16 16"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"
-                          />
-                        </svg>
-                        Prev
-                      </button>
-
-                      <button
-                        type="button"
-                        className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
-                      >
-                        Next
-                        <svg
-                          className="w-3 h-3"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          viewBox="0 0 16 16"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
             </div>

@@ -3,7 +3,7 @@ import {convertirFechaTexto} from "@/app/services/dateUtils";
 
 export default async function Individual({ params }) {
 
-  const { id } = params;
+  const { id,date_one,date_two } = params;
   const punchs = await fetchEmployeePunchTime(id,"2023-11-01","2023-11-03");
   const img_emp = `http://${process.env.PHOTO_HOST}:${process.env.PHOTO_PORT}/${process.env.PHOTO_ROUTE}/${id}.jpg`;
 
@@ -40,7 +40,7 @@ export default async function Individual({ params }) {
                       height="20"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#ffffff"
+                      stroke="currentColor"
                       strokeWidth="1.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -59,7 +59,7 @@ export default async function Individual({ params }) {
                       height="20"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#ffffff"
+                      stroke="currentColor"
                       strokeWidth="1.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -78,7 +78,7 @@ export default async function Individual({ params }) {
                       height="20"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#ffffff"
+                      stroke="currentColor"
                       strokeWidth="1.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -95,7 +95,7 @@ export default async function Individual({ params }) {
                       height="20"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#ffffff"
+                      stroke="currentColor"
                       strokeWidth="1.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
