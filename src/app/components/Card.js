@@ -1,3 +1,4 @@
+import Image from 'next/image';
 
 function convertirFechaAFechaTexto(fecha) {
     const fechaObj = new Date(fecha);
@@ -12,9 +13,11 @@ function Card(props) {
   return (
     <article className="rounded-xl border border-gray-700 bg-gray-300 p-4">
       <div className="flex items-center gap-4">
-        <img
+      <Image
           alt={altimg}
           src={img}
+          width={64} // Ajusta el ancho según sea necesario
+          height={64} // Ajusta la altura según sea necesario
           className="h-16 w-16 rounded-full object-cover"
         />
 

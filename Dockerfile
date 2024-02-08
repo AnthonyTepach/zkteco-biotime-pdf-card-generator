@@ -1,8 +1,10 @@
-FROM node:18.15
+FROM node:20.10
 
 WORKDIR /app
 
 COPY . /app
+
+RUN npm install
 
 EXPOSE 4000
 

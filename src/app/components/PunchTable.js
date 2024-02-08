@@ -1,117 +1,127 @@
 // PunchTable.js
-import React from 'react';
-import {convertirFechaTexto} from "@/app/services/dateUtils";
-import {fetchPunchTime} from '../services/biotimepro'
-import XLSX from 'xlsx';
+import React from "react";
+import { convertirFechaTexto } from "@/app/services/dateUtils";
+import { fetchPunchTime } from "../services/biotimepro";
+import XLSX from "xlsx";
+import Image from "next/image";
+const PunchTable = ({ punchs, type, date_one, date_two }) => {
+  const numberOfRecords = punchs.length;
+  const downloadJSON = async () => {
+    try {
+      // Supongamos que fetchPunchTime retorna el JSON que deseas descargar
+      const data = await fetchPunchTime(type, date_one, date_two);
 
-const PunchTable = ({ punchs,type,date_one,date_two}) => {
-  
-    const numberOfRecords = punchs.length;
-    const downloadJSON = async () => {
-      try {
-        // Supongamos que fetchPunchTime retorna el JSON que deseas descargar
-        const data = await fetchPunchTime(type, date_one, date_two);
-    
-        // Verifica si la respuesta contiene datos
-        if (!data) {
-          console.error('No se obtuvieron datos del servidor.');
-          return;
-        }
-    
-        // Convierte los datos a una cadena JSON con formato legible
-        const jsonString = JSON.stringify(data, null, 2);
-    
-        // Crea un objeto Blob con los datos JSON
-        const blob = new Blob([jsonString], { type: 'application/json' });
-    
-        // Crea una URL para el Blob
-        const url = window.URL.createObjectURL(blob);
-    
-        // Crea un enlace de descarga y simula un clic para iniciar la descarga
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${type}_${date_one}_TO_${date_two}.json`; // Puedes cambiar el nombre del archivo según tu preferencia
-        document.body.appendChild(a);
-        a.click();
-    
-        // Libera los recursos después de la descarga
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      } catch (error) {
-        console.error('Error al descargar el archivo JSON:', error);
+      // Verifica si la respuesta contiene datos
+      if (!data) {
+        console.error("No se obtuvieron datos del servidor.");
+        return;
       }
+
+      // Convierte los datos a una cadena JSON con formato legible
+      const jsonString = JSON.stringify(data, null, 2);
+
+      // Crea un objeto Blob con los datos JSON
+      const blob = new Blob([jsonString], { type: "application/json" });
+
+      // Crea una URL para el Blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Crea un enlace de descarga y simula un clic para iniciar la descarga
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${type}_${date_one}_TO_${date_two}.json`; // Puedes cambiar el nombre del archivo según tu preferencia
+      document.body.appendChild(a);
+      a.click();
+
+      // Libera los recursos después de la descarga
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Error al descargar el archivo JSON:", error);
     }
-    const downloadCSV = async () => {
-      try {
-        // Supongamos que fetchPunchTime retorna el JSON que deseas descargar
-        const data = await fetchPunchTime(type, date_one, date_two);
-    
-        // Verifica si la respuesta contiene datos
-        if (!data) {
-          console.error('No se obtuvieron datos del servidor.');
-          return;
-        }
-    
-        // Convierte los datos a formato CSV
-        const csvData = convertToCSV(data);
-    
-        // Crea un objeto Blob con los datos CSV
-        const blob = new Blob([csvData], { type: 'text/csv' });
-    
-        // Crea una URL para el Blob
-        const url = window.URL.createObjectURL(blob);
-    
-        // Crea un enlace de descarga y simula un clic para iniciar la descarga
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${type}_${date_one}_TO_${date_two}.csv`; // Puedes cambiar el nombre del archivo según tu preferencia
-        document.body.appendChild(a);
-        a.click();
-    
-        // Libera los recursos después de la descarga
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      } catch (error) {
-        console.error('Error al descargar el archivo CSV:', error);
+  };
+  const downloadCSV = async () => {
+    try {
+      // Supongamos que fetchPunchTime retorna el JSON que deseas descargar
+      const data = await fetchPunchTime(type, date_one, date_two);
+
+      // Verifica si la respuesta contiene datos
+      if (!data) {
+        console.error("No se obtuvieron datos del servidor.");
+        return;
       }
-    };
-    
-    // Función para convertir datos a formato CSV
-    const convertToCSV = (data) => {
-      // Encabezados
-      const headers = ["N° Empleado", "Nombre(s)", "Apellidos", "Area", "Tipo","Dia Semana", "Fecha", "H1", "H2", "H3", "H4"];
-    
-      // Filas de datos
-      const rows = data.reduce((accumulator, entry) => {
-        const punchTimes = entry.punch_times.reduce((punchAccumulator, punch) => {
-          punchAccumulator[punch.fecha] = punchAccumulator[punch.fecha] || [];
-          punchAccumulator[punch.fecha].push(punch.hora);
-          return punchAccumulator;
-        }, {});
-    
-        Object.keys(punchTimes).forEach((fecha) => {
-          accumulator.push([
-            entry.emp_code,
-            entry.first_name,
-            entry.last_name,
-            entry.position_name,
-            entry.dept_name,
-            convertirFechaTexto(fecha),
-            ...punchTimes[fecha]
-          ]);
-        });
-    
-        return accumulator;
-      }, []);
-    
-      // Agregar encabezados a la primera fila
-      rows.unshift(headers);
-    
-      // Convertir a cadena CSV
-      return rows.map(row => row.join(',')).join('\n');
-    };
-    
-    
+
+      // Convierte los datos a formato CSV
+      const csvData = convertToCSV(data);
+
+      // Crea un objeto Blob con los datos CSV
+      const blob = new Blob([csvData], { type: "text/csv" });
+
+      // Crea una URL para el Blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Crea un enlace de descarga y simula un clic para iniciar la descarga
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${type}_${date_one}_TO_${date_two}.csv`; // Puedes cambiar el nombre del archivo según tu preferencia
+      document.body.appendChild(a);
+      a.click();
+
+      // Libera los recursos después de la descarga
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Error al descargar el archivo CSV:", error);
+    }
+  };
+
+  // Función para convertir datos a formato CSV
+  const convertToCSV = (data) => {
+    // Encabezados
+    const headers = [
+      "N° Empleado",
+      "Nombre(s)",
+      "Apellidos",
+      "Area",
+      "Tipo",
+      "Dia Semana",
+      "Fecha",
+      "H1",
+      "H2",
+      "H3",
+      "H4",
+    ];
+
+    // Filas de datos
+    const rows = data.reduce((accumulator, entry) => {
+      const punchTimes = entry.punch_times.reduce((punchAccumulator, punch) => {
+        punchAccumulator[punch.fecha] = punchAccumulator[punch.fecha] || [];
+        punchAccumulator[punch.fecha].push(punch.hora);
+        return punchAccumulator;
+      }, {});
+
+      Object.keys(punchTimes).forEach((fecha) => {
+        accumulator.push([
+          entry.emp_code,
+          entry.first_name,
+          entry.last_name,
+          entry.position_name,
+          entry.dept_name,
+          convertirFechaTexto(fecha),
+          ...punchTimes[fecha],
+        ]);
+      });
+
+      return accumulator;
+    }, []);
+
+    // Agregar encabezados a la primera fila
+    rows.unshift(headers);
+
+    // Convertir a cadena CSV
+    return rows.map((row) => row.join(",")).join("\n");
+  };
+
   return (
     <>
       <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
@@ -125,7 +135,8 @@ const PunchTable = ({ punchs,type,date_one,date_two}) => {
                       Regitro de entradas y salidas ({type})
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {`${convertirFechaTexto(date_one)}`} <strong>al</strong> {convertirFechaTexto(date_two)} 
+                      {`${convertirFechaTexto(date_one)}`} <strong>al</strong>{" "}
+                      {convertirFechaTexto(date_two)}
                     </p>
                   </div>
 
@@ -237,16 +248,17 @@ const PunchTable = ({ punchs,type,date_one,date_two}) => {
                   </thead>
 
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                    {
-                      punchs.map((punch) => (
-                      <tr>
+                    {punchs.map((punch, index) => (
+                      <tr key={index}>
                         <td className="h-px w-px whitespace-nowrap">
                           <div className="pl-6 lg:pl-3 xl:pl-0 pr-6 py-3">
                             <div className="flex items-center gap-x-3">
-                              <img
-                                className="inline-block h-[2.375rem] w-[2.375rem] rounded-full ml-4"
-                                src={`http://192.168.1.8:8080/files/photo/${punch.emp_code}.jpg`}
+                              <Image
+                                src={`http://192.168.200.12:8080/files/photo/${punch.emp_code}.jpg`}
                                 alt="Image Description"
+                                width={32} // adjust width as needed
+                                height={32} // adjust height as needed
+                                className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
                               />
                               <div className="grow">
                                 <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
@@ -334,8 +346,6 @@ const PunchTable = ({ punchs,type,date_one,date_two}) => {
                       Resultados
                     </p>
                   </div>
-
-                  
                 </div>
               </div>
             </div>

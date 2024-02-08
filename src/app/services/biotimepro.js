@@ -1,5 +1,5 @@
 export const fetchPunchTime = async (type, date_one, date_two) => {
-  const url = `http://192.168.200.107:3000/api/consulta?departamento=${type}&fecha_inicio=${date_one}&fecha_fin=${date_two}`;
+  const url = `http://192.168.200.3:3000/api/consulta?departamento=${type}&fecha_inicio=${date_one}&fecha_fin=${date_two}`;
   
   const response = await fetch(url);
   if (response.ok) {
@@ -11,7 +11,7 @@ export const fetchPunchTime = async (type, date_one, date_two) => {
 };
 
 export const fetchEmployeePunchTime = async (emp_code, date_one, date_two) => {
-  const url = `http://192.168.200.107:3000/api/employee/${emp_code}?fecha_inicio=${date_one}&fecha_fin=${date_two}`;
+  const url = `http://192.168.200.3:3000/api/employee/${emp_code}?fecha_inicio=${date_one}&fecha_fin=${date_two}`;
 
   const response = await fetch(url);
   if (response.ok) {

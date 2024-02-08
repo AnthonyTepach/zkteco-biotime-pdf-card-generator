@@ -1,10 +1,10 @@
-import {fetchEmployeePunchTime} from "@/app/services/biotimepro";
-import {convertirFechaTexto} from "@/app/services/dateUtils";
+import { fetchEmployeePunchTime } from "@/app/services/biotimepro";
+import { convertirFechaTexto } from "@/app/services/dateUtils";
+import Image from "next/image";
 
 export default async function Individual({ params }) {
-
-  const { id,date_one,date_two } = params;
-  const punchs = await fetchEmployeePunchTime(id,"2023-11-01","2023-11-03");
+  const { id, date_one, date_two } = params;
+  const punchs = await fetchEmployeePunchTime(id, "2023-11-01", "2023-11-03");
   const img_emp = `http://${process.env.PHOTO_HOST}:${process.env.PHOTO_PORT}/${process.env.PHOTO_ROUTE}/${id}.jpg`;
 
   return (
@@ -16,11 +16,14 @@ export default async function Individual({ params }) {
               <div className="p-4 md:p-5">
                 <div className="flex-shrink-0 group block">
                   <div className="flex items-center">
-                    <img
-                      className="inline-block flex-shrink-0 h-[3.875rem] w-[3.875rem] rounded-full"
+                    <Image
                       src={img_emp}
-                      alt="Image Description"
+                      alt="Descripción de la imagen"
+                      width={155} // Ajusta el ancho según sea necesario
+                      height={155} // Ajusta la altura según sea necesario
+                      className="inline-block flex-shrink-0 h-[3.875rem] w-[3.875rem] rounded-full"
                     />
+
                     <div className="ml-3">
                       <h3 className="font-semibold text-gray-800 dark:text-white">
                         {punchs[0].first_name}
@@ -145,7 +148,10 @@ export default async function Individual({ params }) {
                           </thead>
                           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                             {punchs[0].punch_times.map((time, index) => (
-                              <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                              <tr
+                                key={index}
+                                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                              >
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
                                   {index + 1}
                                 </td>
