@@ -12,12 +12,11 @@ import Busqueda from "@/app/components/Busqueda";
 
 export default async function PerType({ params }) {
   const { type } = params;
- 
+
 
   return (
-    <>
+
       <Hero type={type}/>
-      
-    </>
+
   );
 }

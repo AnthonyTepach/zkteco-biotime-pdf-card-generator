@@ -1,5 +1,5 @@
 export default function SliderbarToogle(){
-    return (<>
+    return (
         <div className="sticky top-0 inset-x-0 z-20 bg-white border-y px-4 sm:px-6 md:px-8 lg:hidden dark:bg-gray-800 dark:border-gray-700">
           <div className="flex items-center py-4">
             <button
@@ -55,6 +55,6 @@ export default function SliderbarToogle(){
             </ol>
           </div>
         </div>
-    </>)
+    )
 }
 

@@ -66,12 +66,12 @@ export default  function  Hero ({ type }){
                 <div className="flex justify-center -space-x-3">
                   <img
                     className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
-                    src={`http://192.168.1.8:8080/files/photo/789.jpg`}
+                    src={`http://192.168.1.8:8080/files/photo/765.jpg`}
                     alt="Image Description"
                   />
                   <img
                     className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
-                    src={`http://192.168.1.8:8080/files/photo/765.jpg`}
+                    src={`http://192.168.1.8:8080/files/photo/789.jpg`}
                     alt="Image Description"
                   />
                   <img

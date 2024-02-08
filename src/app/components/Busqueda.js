@@ -12,9 +12,9 @@ const Busqueda = ({ type }) => {
   // ... Resto del código del componente Hero ...
 
   return (
-    <>
+    
       {/* Renderiza el contenido del componente */}
-    </>
+   
   );
 };
 
