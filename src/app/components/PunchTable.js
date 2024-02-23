@@ -2,7 +2,7 @@
 import React from "react";
 import { convertirFechaTexto } from "@/app/services/dateUtils";
 import { fetchPunchTime } from "../services/biotimepro";
-import XLSX from "xlsx";
+
 import Image from "next/image";
 const PunchTable = ({ punchs, type, date_one, date_two }) => {
   const numberOfRecords = punchs.length;
