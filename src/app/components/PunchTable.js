@@ -1,16 +1,16 @@
 // PunchTable.js
-import React from "react"
-import { convertirFechaTexto } from "@/app/utils/dateUtils"
-import { fetchPunchTime } from "../services/biotimepro"
-import { downloadJSON,downloadCSV } from "../utils/fileUtils"
-import Image from "next/image"
-
-
+import React from "react";
+import { convertirFechaTexto } from "@/app/utils/dateUtils";
+import { fetchPunchTime } from "../services/biotimepro";
+import { downloadJSON, downloadCSV } from "../utils/fileUtils";
+import { downloadPDF } from "../utils/generatePDF";
+import Image from "next/image";
+import swal from "sweetalert";
 const PunchTable = ({ punchs, type, date_one, date_two }) => {
   const numberOfRecords = punchs.length;
-  
+
   let data_api;
-  
+
   const fetchDataAPI = async () => {
     try {
       data_api = await fetchPunchTime(type, date_one, date_two);
@@ -23,9 +23,6 @@ const PunchTable = ({ punchs, type, date_one, date_two }) => {
   };
 
   fetchDataAPI();
-
-
-
 
   return (
     <>
@@ -48,7 +45,9 @@ const PunchTable = ({ punchs, type, date_one, date_two }) => {
                   <div>
                     <div className="inline-flex gap-x-2">
                       <a
-                        onClick={()=>downloadJSON(data_api,date_one,date_two,type)}
+                        onClick={() =>
+                          downloadJSON(data_api, date_one, date_two, type)
+                        }
                         className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
                         href="#"
                       >
@@ -68,7 +67,9 @@ const PunchTable = ({ punchs, type, date_one, date_two }) => {
                         JSON
                       </a>
                       <a
-                        onClick={()=>downloadCSV(data_api,date_one,date_two,type)}
+                        onClick={() =>
+                          downloadCSV(data_api, date_one, date_two, type)
+                        }
                         className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
                         href="#"
                       >
@@ -90,6 +91,16 @@ const PunchTable = ({ punchs, type, date_one, date_two }) => {
                       <a
                         className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
                         href="#"
+                        onClick={() => {
+                          swal(
+                            "Estamos preparando tu archivo PDF",
+                            "Este proceso puede tomar unos momentos. \n¡Gracias por tu paciencia!",
+                            "success"
+                          );
+                          setTimeout(() => {
+                            downloadPDF(data_api, date_one, date_two, type);
+                          }, 200);
+                        }}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
