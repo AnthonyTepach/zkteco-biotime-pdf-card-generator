@@ -32,8 +32,8 @@ export const downloadPDF = async (data_api, date_one, date_two, type) => {
     //inicio foreach employee
     page_doc.addPage();
     page_doc.addImage(
-      `/resources_pdf/${background_color}`,
-      "PNG",
+      `../resources_pdf/${background_color}`,
+      "JPEG",
       0,
       0,
       page_doc.internal.pageSize.width,
@@ -65,7 +65,7 @@ export const downloadPDF = async (data_api, date_one, date_two, type) => {
     page_doc.setFontSize(16);
     //foto empleado
     page_doc.addImage(
-      `/resources_pdf/photos/${employee.emp_code}.png`,
+      `../resources_pdf/photos/${employee.emp_code}.jpg`,
       "JPEG",
       page_doc.internal.pageSize.width - 3,
       page_doc.internal.pageSize.height - 5.66,

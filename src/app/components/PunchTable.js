@@ -170,7 +170,7 @@ const PunchTable = ({ punchs, type, date_one, date_two }) => {
                           <div className="pl-6 lg:pl-3 xl:pl-0 pr-6 py-3">
                             <div className="flex items-center gap-x-3">
                               <Image
-                                src={`http://192.168.200.12:8080/files/photo/${punch.emp_code}.jpg`}
+                                src={`/resources_pdf/photos/${punch.emp_code}.jpg`}
                                 alt="Image Description"
                                 width={32} // adjust width as needed
                                 height={32} // adjust height as needed
