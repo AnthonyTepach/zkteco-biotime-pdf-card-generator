@@ -1,126 +1,31 @@
 // PunchTable.js
-import React from "react";
-import { convertirFechaTexto } from "@/app/services/dateUtils";
-import { fetchPunchTime } from "../services/biotimepro";
+import React from "react"
+import { convertirFechaTexto } from "@/app/utils/dateUtils"
+import { fetchPunchTime } from "../services/biotimepro"
+import { downloadJSON,downloadCSV } from "../utils/fileUtils"
+import Image from "next/image"
 
-import Image from "next/image";
+
 const PunchTable = ({ punchs, type, date_one, date_two }) => {
   const numberOfRecords = punchs.length;
-  const downloadJSON = async () => {
+  
+  let data_api;
+  
+  const fetchDataAPI = async () => {
     try {
-      // Supongamos que fetchPunchTime retorna el JSON que deseas descargar
-      const data = await fetchPunchTime(type, date_one, date_two);
-
-      // Verifica si la respuesta contiene datos
-      if (!data) {
+      data_api = await fetchPunchTime(type, date_one, date_two);
+      if (!data_api) {
         console.error("No se obtuvieron datos del servidor.");
-        return;
       }
-
-      // Convierte los datos a una cadena JSON con formato legible
-      const jsonString = JSON.stringify(data, null, 2);
-
-      // Crea un objeto Blob con los datos JSON
-      const blob = new Blob([jsonString], { type: "application/json" });
-
-      // Crea una URL para el Blob
-      const url = window.URL.createObjectURL(blob);
-
-      // Crea un enlace de descarga y simula un clic para iniciar la descarga
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${type}_${date_one}_TO_${date_two}.json`; // Puedes cambiar el nombre del archivo según tu preferencia
-      document.body.appendChild(a);
-      a.click();
-
-      // Libera los recursos después de la descarga
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
     } catch (error) {
-      console.error("Error al descargar el archivo JSON:", error);
-    }
-  };
-  const downloadCSV = async () => {
-    try {
-      // Supongamos que fetchPunchTime retorna el JSON que deseas descargar
-      const data = await fetchPunchTime(type, date_one, date_two);
-
-      // Verifica si la respuesta contiene datos
-      if (!data) {
-        console.error("No se obtuvieron datos del servidor.");
-        return;
-      }
-
-      // Convierte los datos a formato CSV
-      const csvData = convertToCSV(data);
-
-      // Crea un objeto Blob con los datos CSV
-      const blob = new Blob([csvData], { type: "text/csv" });
-
-      // Crea una URL para el Blob
-      const url = window.URL.createObjectURL(blob);
-
-      // Crea un enlace de descarga y simula un clic para iniciar la descarga
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${type}_${date_one}_TO_${date_two}.csv`; // Puedes cambiar el nombre del archivo según tu preferencia
-      document.body.appendChild(a);
-      a.click();
-
-      // Libera los recursos después de la descarga
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error("Error al descargar el archivo CSV:", error);
+      console.error("Error al obtener los datos:", error);
     }
   };
 
-  // Función para convertir datos a formato CSV
-  const convertToCSV = (data) => {
-    // Encabezados
-    const headers = [
-      "N° Empleado",
-      "Nombre(s)",
-      "Apellidos",
-      "Area",
-      "Tipo",
-      "Dia Semana",
-      "Fecha",
-      "H1",
-      "H2",
-      "H3",
-      "H4",
-    ];
+  fetchDataAPI();
 
-    // Filas de datos
-    const rows = data.reduce((accumulator, entry) => {
-      const punchTimes = entry.punch_times.reduce((punchAccumulator, punch) => {
-        punchAccumulator[punch.fecha] = punchAccumulator[punch.fecha] || [];
-        punchAccumulator[punch.fecha].push(punch.hora);
-        return punchAccumulator;
-      }, {});
 
-      Object.keys(punchTimes).forEach((fecha) => {
-        accumulator.push([
-          entry.emp_code,
-          entry.first_name,
-          entry.last_name,
-          entry.position_name,
-          entry.dept_name,
-          convertirFechaTexto(fecha),
-          ...punchTimes[fecha],
-        ]);
-      });
 
-      return accumulator;
-    }, []);
-
-    // Agregar encabezados a la primera fila
-    rows.unshift(headers);
-
-    // Convertir a cadena CSV
-    return rows.map((row) => row.join(",")).join("\n");
-  };
 
   return (
     <>
@@ -143,7 +48,7 @@ const PunchTable = ({ punchs, type, date_one, date_two }) => {
                   <div>
                     <div className="inline-flex gap-x-2">
                       <a
-                        onClick={downloadJSON}
+                        onClick={()=>downloadJSON(data_api,date_one,date_two,type)}
                         className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
                         href="#"
                       >
@@ -163,7 +68,7 @@ const PunchTable = ({ punchs, type, date_one, date_two }) => {
                         JSON
                       </a>
                       <a
-                        onClick={downloadCSV}
+                        onClick={()=>downloadCSV(data_api,date_one,date_two,type)}
                         className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
                         href="#"
                       >
