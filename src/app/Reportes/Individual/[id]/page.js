@@ -1,5 +1,5 @@
 import { fetchEmployeePunchTime } from "@/app/services/biotimepro";
-import { convertirFechaTexto } from "@/app/services/dateUtils";
+import { convertirFechaTexto } from "@/app/utils/dateUtils";
 import Image from "next/image";
 
 export default async function Individual({ params }) {
