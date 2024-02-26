@@ -63,28 +63,28 @@ export default function Hero({ type }) {
               <div className="flex-shrink-0 pb-5 sm:flex sm:pb-0 sm:pr-5">
                 <div className="flex justify-center -space-x-3">
                   <Image
-                    src={`http://192.168.200.12:8080/files/photo/765.jpg`}
+                    src={`/resources_pdf/photos/765.jpg`}
                     alt="Image Description"
                     width={32} // Ajusta el ancho según sea necesario
                     height={32} // Ajusta la altura según sea necesario
                     className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
                   />
                   <Image
-                    src={`http://192.168.200.12:8080/files/photo/789.jpg`}
+                    src={`/resources_pdf/icons/csv.png`}
                     alt="Image Description"
                     width={32} // Ajusta el ancho según sea necesario
                     height={32} // Ajusta la altura según sea necesario
                     className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
                   />
                   <Image
-                    src={`http://192.168.200.12:8080/files/photo/1402.jpg`}
+                    src={`/resources_pdf/icons/pdf.png`}
                     alt="Image Description"
                     width={32} // Ajusta el ancho según sea necesario
                     height={32} // Ajusta la altura según sea necesario
                     className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
                   />
                   <Image
-                    src={`http://192.168.200.12:8080/files/photo/1417.jpg`}
+                    src={`/resources_pdf/icons/json.png`}
                     alt="Image Description"
                     width={32} // Ajusta el ancho según sea necesario
                     height={32} // Ajusta la altura según sea necesario
@@ -103,10 +103,10 @@ export default function Hero({ type }) {
 
               <div className="pt-5 sm:pt-0 sm:pl-5">
                 <div className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                  Trust pilot
+                Experiencia de usuario
                 </div>
                 <div className="text-sm text-gray-500">
-                  Rated best over 37k reviews
+                Confiable, ágil y adaptable a tu organización.
                 </div>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-
+import { obtenerNumeroSemana } from "@/app/utils/dateUtils";
 
 export const downloadPDF = async (data_api, date_one, date_two, type) => {
     
@@ -52,6 +52,8 @@ export const downloadPDF = async (data_api, date_one, date_two, type) => {
     }
     //nombre de empleado
     page_doc.text(1.25, 1.64, employee.first_name + " " + employee.last_name);
+    //nuemero de semana
+    page_doc.text(1.35, 2.04, obtenerNumeroSemana(new Date(date_two).toISOString().substring(0, 10)));
     //Del ${date_one} al ${date_two}
     page_doc.text(2.8, 2.04, date_one.split("-")[2]);
     page_doc.text(4, 2.04, date_two.split("-")[2]);
