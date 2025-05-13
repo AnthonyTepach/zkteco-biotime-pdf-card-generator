@@ -1,0 +1,19 @@
+services:
+  nextjs-app:
+    container_name: tarjetas-reloj-checador
+    build:
+      context: .
+      dockerfile: Dockerfile
+      tags:
+        - probable-octo-memory:dev
+    image: probable-octo-memory:dev
+    ports:
+      - "40001:4000"  # Puerto externo 40001 → Puerto interno 4000
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /home/sistemas/docker/probable-octo-memory/public/resources_pdf:/app/public/resources_pdf
+    environment:
+      - NODE_ENV=development
+    command: npx next dev -p 4000
+    restart: unless-stopped
