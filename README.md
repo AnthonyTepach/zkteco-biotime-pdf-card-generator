@@ -20,12 +20,13 @@ docker build -t tarjetas-reloj-checador:dev .
 Una vez que la imagen esté construida, puedes ejecutar el contenedor con el siguiente comando:
 ```bash
 docker run -d \
-  --name nextjs-dev-container \
-  -p 40001:4000 \
+  --name container-biotimepro-pdf \
+  -p 4001:4000 \
   -v "$PWD":/app \
   -v /app/node_modules \
-  -v /home/sistemas/docker/probable-octo-memory/public/resources_pdf:/app/public/resources_pdf \
+  -v "$PWD/public/resources_pdf:/app/public/resources_pdf" \
   tarjetas-reloj-checador:dev
+
 ```
 ## 4. **Verificar que el Contenedor Está Corriendo**
 
