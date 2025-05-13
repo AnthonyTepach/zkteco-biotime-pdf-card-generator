@@ -35,3 +35,10 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 # probable-octo-memory
+docker run -d \
+  --name nextjs-dev-container \
+  -p 40001:4000 \
+  -v "$PWD":/app \
+  -v /app/node_modules \
+  -v /home/sistemas/docker/probable-octo-memory/public/resources_pdf:/app/public/resources_pdf \
+  tarjetas-reloj-checador:dev
