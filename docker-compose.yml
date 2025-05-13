@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: probable-octo-memory:dev  # Aquí defines el nombre y tag de la imagen
+    image: probable-octo-memory:dev  # Define el nombre y la etiqueta de la imagen
     ports:
       - "40001:4000"
     volumes:
