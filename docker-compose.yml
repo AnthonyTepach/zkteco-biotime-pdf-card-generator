@@ -1,14 +1,14 @@
+version: "3.8"
+
 services:
   nextjs-app:
-    container_name: tarjetas-reloj-checador
+    container_name: nextjs-dev-container
     build:
       context: .
       dockerfile: Dockerfile
-      tags:
-        - probable-octo-memory:dev
-    image: probable-octo-memory:dev
+    image: probable-octo-memory:dev  # Aquí defines el nombre y tag de la imagen
     ports:
-      - "40001:4000"  # Puerto externo 40001 → Puerto interno 4000
+      - "40001:4000"
     volumes:
       - .:/app
       - /app/node_modules
