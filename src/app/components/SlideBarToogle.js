@@ -29,7 +29,7 @@ export default function SliderbarToogle(){
               aria-label="Breadcrumb"
             >
               <li className="flex items-center text-sm text-gray-800 dark:text-gray-400">
-                Application Layout
+                Layer Eight Report
                 <svg
                   className="flex-shrink-0 mx-3 overflow-visible h-2.5 w-2.5 text-gray-400 dark:text-gray-600"
                   width="16"
