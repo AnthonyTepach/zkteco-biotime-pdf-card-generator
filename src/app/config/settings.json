@@ -1,0 +1,81 @@
+{
+  "horarios": {
+    "entradaTemprana": {
+      "horaInicio": "5:00",
+      "horaFin": "7:33",
+      "departamentosExcluidos": ["Intendencia", "Embarques"],
+      "bonificacionGeneral": 0.5,
+      "bloqueRedondeo": 0.5
+    },
+    "retardos": {
+      "horaLimite": "8:00",
+      "horaInicioCalculo": "8:01",
+      "horaFinCalculo": "12:00"
+    },
+    "horasExtrasSalida": {
+      "horaBaseSalida": "18:35",
+      "horaMaximaCalculo": "23:59",
+      "bloqueMinutos": 30
+    },
+    "comidas": {
+      "hc1": {
+        "nombre": "Comida 1",
+        "horaInicio": "12:30",
+        "horaFin": "13:30",
+        "activo": false
+      },
+      "hc2": {
+        "nombre": "Comida 2",
+        "horaInicio": "13:30",
+        "horaFin": "14:30",
+        "activo": false
+      },
+      "hc3": {
+        "nombre": "Comida 3",
+        "horaInicio": "14:30",
+        "horaFin": "15:30",
+        "activo": true
+      },
+      "hc4": {
+        "nombre": "Comida 4",
+        "horaInicio": "15:30",
+        "horaFin": "16:30",
+        "activo": true
+      }
+    }
+  },
+  "csvConfig": {
+    "headers": [
+      "N° Empleado",
+      "Nombre(s)",
+      "Apellidos",
+      "Area",
+      "Tipo",
+      "Dia Semana",
+      "Fecha",
+      "H1",
+      "H2",
+      "H3",
+      "H4",
+      "H5",
+      "H6",
+      "Extras Entrada",
+      "Retardo",
+      "Extras Salida"
+    ],
+    "separadorRegistros": ",",
+    "separadorDecimales": ".",
+    "incluirFilaVacia": true,
+    "codificacion": "UTF-8",
+    "marcaBOM": true
+  },
+  "formatos": {
+    "hora": "HH:MM",
+    "fecha": "YYYY-MM-DD",
+    "decimalesHoras": 1
+  },
+  "ayudaTransporte": {
+    "monto": 30.0,
+    "empleadosBeneficiados": [765, 1002, 1023, 1050, 1078]
+  }
+}

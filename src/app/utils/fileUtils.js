@@ -1,4 +1,5 @@
 import { convertirFechaTexto } from "@/app/utils/dateUtils";
+import config from '@/app/config/settings'
 export const downloadJSON = async (data_api, date_one, date_two, type) => {
   try {
     if (!data_api) {
