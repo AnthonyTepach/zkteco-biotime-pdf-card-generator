@@ -1,5 +1,6 @@
 import { convertirFechaTexto } from "@/app/utils/dateUtils";
 import config from '@/app/config/settings'
+
 export const downloadJSON = async (data_api, date_one, date_two, type) => {
   try {
     if (!data_api) {
@@ -110,24 +111,7 @@ const calcularExtrasSalida = (horaSalida) => {
 };
 
 const convertToCSV = (data) => {
-  const headers = [
-    "N° Empleado",
-    "Nombre(s)",
-    "Apellidos",
-    "Area",
-    "Tipo",
-    "Dia Semana",
-    "Fecha",
-    "H1",
-    "H2",
-    "H3",
-    "H4",
-    "H5",
-    "H6",
-    "Extras Entrada",
-    "Retardo",
-    "Extras Salida",
-  ];
+  const headers = config.csvConfig.headers;
 
   // Ordenar los datos por código de empleado para asegurar que estén agrupados
   data.sort((a, b) => a.emp_code - b.emp_code);

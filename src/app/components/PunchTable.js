@@ -6,6 +6,7 @@ import { downloadJSON, downloadCSV } from "../utils/fileUtils";
 import { downloadPDF } from "../utils/generatePDF";
 import Image from "next/image";
 import swal from "sweetalert";
+import Link from "next/link";
 const PunchTable = ({ punchs, type, date_one, date_two }) => {
   const numberOfRecords = punchs.length;
 
@@ -218,7 +219,11 @@ const PunchTable = ({ punchs, type, date_one, date_two }) => {
                           <div className="px-6 py-3">
                             <div className="flex items-center gap-x-3">
                               <span className="text-xs text-gray-500">
-                                {punch.punch_times.length} Registros
+                                <Link
+                                  href={`/Reportes/Individual/${punch.emp_code}?date_one=${date_one}&date_two=${date_two}`}
+                                >
+                                  Ver {punch.punch_times.length} Registros
+                                </Link>
                               </span>
                             </div>
                           </div>
