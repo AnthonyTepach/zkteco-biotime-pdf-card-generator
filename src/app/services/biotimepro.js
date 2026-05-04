@@ -1,27 +1,43 @@
-const buildApiUrl = (endpoint, queryParams) => {
-  const baseUrl = `${process.env.API_IP}:${process.env.API_PORT}`;
-  return new URL(`${baseUrl}/${endpoint}`, document.baseURI).href + '?' + new URLSearchParams(queryParams).toString();
+const API_BASE_URL = "http://192.168.200.3:3000";
+
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    throw new Error(`Error fetching data: ${response.status} - ${response.statusText}`);
+  }
+  return await response.json();
+};
+
+const fetchWithParams = async (endpoint, params) => {
+  const url = new URL(`${API_BASE_URL}${endpoint}`, document.baseURI);
+  
+  // Append parameters to the URL
+  Object.keys(params).forEach(key => {
+    if (params[key] !== undefined && params[key] !== null) {
+      url.searchParams.append(key, params[key]);
+    }
+  });
+
+  try {
+    const response = await fetch(url.toString());
+    return handleResponse(response);
+  } catch (error) {
+    console.error("Error during fetch:", error.message);
+    throw new Error("Failed to fetch data.");
+  }
 };
 
 export const fetchPunchTime = async (type, date_one, date_two) => {
-  const url = buildApiUrl('api/consulta', { departamento: type, fecha_inicio: date_one, fecha_fin: date_two });
-
-  const response = await fetch(url);
-  if (response.ok) {
-    const data = await response.json(); // Agregamos 'await' aquí para esperar la respuesta JSON.
-    return data;
-  } else {
-    throw new Error('Error fetching punch time data');
+  if (!type || !date_one || !date_two) {
+    throw new Error("Missing required parameters: type, date_one, date_two");
   }
+
+  return await fetchWithParams("/api/consulta", { departamento: type, fecha_inicio: date_one, fecha_fin: date_two });
 };
 
 export const fetchEmployeePunchTime = async (emp_code, date_one, date_two) => {
-  const url = buildApiUrl(`/api/employee/${emp_code}`, { fecha_inicio: date_one, fecha_fin: date_two });
-
-  const response = await fetch(url);
-  if (response.ok) {
-    return response.json();
-  } else {
-    throw new Error('Error fetching employee punch time data');
+  if (!emp_code || !date_one || !date_two) {
+    throw new Error("Missing required parameters: emp_code, date_one, date_two");
   }
+
+  return await fetchWithParams(`/api/employee/${emp_CODE}`, { fecha_inicio: date_one, fecha_fin: date_two });
 };
