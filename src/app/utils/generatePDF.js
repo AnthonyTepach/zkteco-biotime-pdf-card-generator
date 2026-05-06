@@ -103,7 +103,7 @@ export const downloadPDF = async (data_api, date_one, date_two, type) => {
       avoidFirstPage: true,
       startY: 2.5,
     });
-z|
+
     // Crea la segunda tabla
     page_doc.autoTable({
       head: headers_punch_time,
