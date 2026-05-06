@@ -2,35 +2,35 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { obtenerNumeroSemana } from "@/app/utils/dateUtils";
 
+/**
+ * Genera y descarga un PDF con los reportes de empleados
+ * @param {Array} data_api - Datos de empleados
+ * @param {string} date_one - Fecha inicial en formato YYYY-MM-DD
+ * @param {string} date_two - Fecha final en formato YYYY-MM-DD
+ * @param {string} type - Tipo de reporte ("SEMANA" o "QUINCENA")
+ */
 export const downloadPDF = async (data_api, date_one, date_two, type) => {
-    
-  var background_color = "Sfte.png";
-  if (type === "QUINCENA") {
-    background_color = "Qfte.png";
-  }
+  // Determinar la imagen de fondo según el tipo de reporte
+  const background_color = type === "QUINCENA" ? "Qfte.png" : "Sfte.png";
+  
+  // Array con los meses en español
   const meses_texto = [
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre",
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
   ];
+  
+  // Crear el documento PDF con orientación horizontal
   const page_doc = new jsPDF({
     orientation: "landscape",
     unit: "in",
     format: [8.5, 11],
   });
 
+  // Procesar cada empleado
   data_api.forEach((employee) => {
-    //inicio foreach employee
     page_doc.addPage();
+    
+    // Agregar imagen de fondo
     page_doc.addImage(
       `../resources_pdf/${background_color}`,
       "JPEG",
@@ -39,33 +39,41 @@ export const downloadPDF = async (data_api, date_one, date_two, type) => {
       page_doc.internal.pageSize.width,
       page_doc.internal.pageSize.height
     );
-    //numero de empleado
+    
+    // Agregar información del empleado
     page_doc.text(9.1, 1.64, employee.emp_code);
-    //Departamento de empleado
-    if (employee.position_name.length < 20) {
+    
+    // Departamento del empleado
+    const positionName = employee.position_name;
+    if (positionName.length < 20) {
       page_doc.setFontSize(16);
-      page_doc.text(7.12, 1.64, employee.position_name);
+      page_doc.text(7.12, 1.64, positionName);
     } else {
       page_doc.setFontSize(12);
-      page_doc.text(7, 1.64, employee.position_name);
+      page_doc.text(7, 1.64, positionName);
       page_doc.setFontSize(16);
     }
-    //nombre de empleado
-    page_doc.text(1.25, 1.64, employee.first_name + " " + employee.last_name);
-    //nuemero de semana
-    page_doc.text(1.35, 2.04, obtenerNumeroSemana(new Date(date_two).toISOString().substring(0, 10)));
-    //Del ${date_one} al ${date_two}
+    
+    // Nombre completo del empleado
+    page_doc.text(1.25, 1.64, `${employee.first_name} ${employee.last_name}`);
+    
+    // Número de semana
+    const weekNumber = obtenerNumeroSemana(new Date(date_two).toISOString().substring(0, 10));
+    page_doc.text(1.35, 2.04, weekNumber);
+    
+    // Fechas del reporte
+    const dateParts = date_two.split("-");
     page_doc.text(2.8, 2.04, date_one.split("-")[2]);
     page_doc.text(4, 2.04, date_two.split("-")[2]);
-    //del mes de:
-    page_doc.text(6.5, 2.04, meses_texto[date_two.split("-")[1] - 1]);
-    //del año
-    page_doc.text(9.3, 2.04, date_two.split("-")[0]);
-    //nombre de la firma
+    page_doc.text(6.5, 2.04, meses_texto[parseInt(dateParts[1]) - 1]);
+    page_doc.text(9.3, 2.04, dateParts[0]);
+    
+    // Firma del empleado
     page_doc.setFontSize(12);
-    page_doc.text(7.1, 6, employee.first_name + " " + employee.last_name);
+    page_doc.text(7.1, 6, `${employee.first_name} ${employee.last_name}`);
     page_doc.setFontSize(16);
-    //foto empleado
+    
+    // Foto del empleado
     page_doc.addImage(
       `../resources_pdf/photos/${employee.emp_code}.jpg`,
       "JPEG",
@@ -74,26 +82,27 @@ export const downloadPDF = async (data_api, date_one, date_two, type) => {
       1.5,
       2
     );
-    //tablas de checadas
-    let color = [0, 0, 0];
-    if (employee.dept_name === "SEMANA") {
-      color = [60, 236, 218];
-    } else if (employee.dept_name === "QUINCENA") {
-      color = [241, 19, 34];
-    }
+    
+    // Configurar colores según el departamento
+    const color = employee.dept_name === "SEMANA" 
+      ? [60, 236, 218] 
+      : employee.dept_name === "QUINCENA" 
+        ? [241, 19, 34] 
+        : [0, 0, 0];
+    
+    // Configurar encabezados y datos para la tabla de checadas
     const headers_punch_time = [["Fecha", "Hora", "Dispositivo"]];
-
     const data_punch_time = employee.punch_times.map((punch) => [
       punch.fecha,
       punch.hora,
       punch.checo_en,
     ]);
-
-    // Divide los datos en dos conjuntos de filas
+    
+    // Dividir los datos en dos conjuntos para dos tablas
     const firstRows = data_punch_time.slice(0, 13);
     const secondRows = data_punch_time.slice(13);
-
-    // Crea la primera tabla
+    
+    // Crear primera tabla
     page_doc.autoTable({
       head: headers_punch_time,
       body: firstRows,
@@ -103,8 +112,8 @@ export const downloadPDF = async (data_api, date_one, date_two, type) => {
       avoidFirstPage: true,
       startY: 2.5,
     });
-
-    // Crea la segunda tabla
+    
+    // Crear segunda tabla
     page_doc.autoTable({
       head: headers_punch_time,
       body: secondRows,
@@ -113,9 +122,11 @@ export const downloadPDF = async (data_api, date_one, date_two, type) => {
       tableWidth: "wrap",
       avoidFirstPage: true,
       startY: 2.5,
-      margin: { left: 3.5, right: 3.5 }, // La posición horizontal debe ser igual al ancho de la tabla anterior + 10
+      margin: { left: 3.5, right: 3.5 },
     });
-  }); //fin foreach empleado
+  });
+  
+  // Eliminar la primera página que se crea por defecto
   page_doc.deletePage(1); 
   page_doc.save(`REPORTE_${type}_${date_one}_${date_two}.pdf`);
 };
