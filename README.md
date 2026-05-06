@@ -1,92 +1,143 @@
-# Instrucciones para Ejecutar el Proyecto Next.js con Docker
+# ZKTeco BioTime PDF Card Generator
 
-A continuación, te guiaré a través de los pasos para ejecutar el proyecto con Docker, incluyendo la construcción de la imagen y la ejecución del contenedor.
+Next.js application for generating employee PDF cards using data provided by the [zkteco-biotime-attendance-api](https://github.com/AnthonyTepach/zkteco-biotime-attendance-api).
 
-## 1. **Clonar el Repositorio**
+This project does **not** connect directly to the BioTime PostgreSQL database. Instead, it consumes the external API to retrieve employee attendance and check-in data, and then generates downloadable PDF documents from that information.
 
-Primero, clona el repositorio en tu máquina local:
+## Features
+
+- Generate employee PDF cards from BioTime attendance data.
+- Built with Next.js for a fast and modern web interface.
+- Connects to `zkteco-biotime-attendance-api` to fetch employee records.
+- Docker-ready development workflow.
+- Supports mounting local resources for PDF generation.
+
+## Architecture
+
+This project works as the PDF generation layer of the BioTime ecosystem:
+
+- **API layer:** [`zkteco-biotime-attendance-api`](https://github.com/AnthonyTepach/zkteco-biotime-attendance-api)
+- **Frontend / PDF layer:** `zkteco-biotime-pdf-card-generator`
+
+The application sends requests to the attendance API, processes the response, and renders employee card data into PDF files.
+
+## Requirements
+
+Before running this project, make sure you have:
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/) (optional)
+- Access to a running instance of [`zkteco-biotime-attendance-api`](https://github.com/AnthonyTepach/zkteco-biotime-attendance-api)
+
+## Clone the repository
+
 ```bash
-git clone git@github.com:AnthonyTepach/probable-octo-memory.git
-cd proyecto-nextjs
+git clone git@github.com:AnthonyTepach/zkteco-biotime-pdf-card-generator.git
+cd zkteco-biotime-pdf-card-generator
 ```
-## 2. **Construir la Imagen de Docker**
 
-Desde la raíz del proyecto, ejecuta el siguiente comando para construir la imagen de Docker:
+## Build the Docker image
+
+From the project root, run:
+
 ```bash
-docker build -t tarjetas-reloj-checador:dev .
+docker build -t zkteco-biotime-pdf-card-generator:dev .
 ```
-## 3. **Ejecutar el Contenedor**
 
-Una vez que la imagen esté construida, puedes ejecutar el contenedor con el siguiente comando:
+## Run the container
+
 ```bash
 docker run -d \
-  --name container-biotimepro-pdf \
+  --name zkteco-biotime-pdf-card-generator \
   -p 4001:4000 \
   -v "$PWD":/app \
   -v /app/node_modules \
   -v "$PWD/public/resources_pdf:/app/public/resources_pdf" \
-  tarjetas-reloj-checador:dev
-
+  zkteco-biotime-pdf-card-generator:dev
 ```
-## 4. **Verificar que el Contenedor Está Corriendo**
 
-Para verificar que el contenedor está en ejecución, puedes usar el siguiente comando:
+## Verify the container
+
+To confirm the container is running:
+
 ```bash
 docker ps
 ```
-Este comando te mostrará los contenedores activos en tu sistema. Busca el contenedor llamado nextjs-dev-container y asegúrate de que el puerto 40001 esté mapeado.
 
-## **5. Acceder a la Aplicación**
+Look for the container named `zkteco-biotime-pdf-card-generator` and verify that port `4001` is mapped correctly.
 
-Con el contenedor en funcionamiento, puedes acceder a la aplicación desde tu navegador web visitando la siguiente URL:
+## Access the application
+
+Open your browser and go to:
+
 ```bash
-http://localhost:40001
+http://localhost:4001
 ```
 
-La aplicación Next.js debería estar corriendo y disponible en esa dirección.
+## Stop and remove the container
 
-## **6. Detener el Contenedor**
+Stop the container:
 
-Cuando hayas terminado y quieras detener el contenedor, usa el siguiente comando:
 ```bash
-docker stop nextjs-dev-container
+docker stop zkteco-biotime-pdf-card-generator
 ```
-Este comando detendrá el contenedor que está ejecutando la aplicación.
 
-Si deseas eliminar el contenedor, usa:
+Remove the container:
+
 ```bash
-docker rm nextjs-dev-container
+docker rm zkteco-biotime-pdf-card-generator
 ```
-## **7. Otros Comandos Útiles**
 
-A continuación, algunos comandos adicionales que pueden ser útiles:
+## View container logs
 
-Ver los logs del contenedor:
 ```bash
-docker logs nextjs-dev-container
+docker logs zkteco-biotime-pdf-card-generator
 ```
-Eliminar la imagen (si ya no la necesitas):
+
+## Remove the Docker image
+
 ```bash
-docker rmi tarjetas-reloj-checador:dev
+docker rmi zkteco-biotime-pdf-card-generator:dev
 ```
-## **8. Notas**
 
-Asegúrate de que el directorio 
-```bash 
-$(PWD)/public/resources_pdf
-``` 
-esté disponible en tu sistema local, ya que este directorio se monta dentro del contenedor.
+## Docker Compose
 
-Si prefieres usar Docker Compose, puedes usar el archivo docker-compose.yml para automatizar la ejecución.
+If you prefer Docker Compose, you can use a setup like this:
 
-En ese caso, puedes ejecutar 
+```yml
+version: '3'
+
+services:
+  pdf_card_generator:
+    container_name: zkteco-biotime-pdf-card-generator
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./public/resources_pdf:/app/public/resources_pdf
+    restart: unless-stopped
+```
+
+Start the service with:
+
 ```bash
-docker-compose up --build -d 
+docker-compose up --build -d
 ```
-para construir y levantar los contenedores.
 
+## Notes
 
-## Authors
+- Make sure the `public/resources_pdf` directory exists on your local machine before starting the container.
+- This project depends on the availability of `zkteco-biotime-attendance-api`.
+- Configure the API base URL in your environment variables if your frontend expects a custom endpoint.
 
-- [@AnthonyTepach](https://github.com/AnthonyTepach)
+## Related project
 
+- [zkteco-biotime-attendance-api](https://github.com/AnthonyTepach/zkteco-biotime-attendance-api)
+
+## Author
+
+[@AnthonyTepach](https://github.com/AnthonyTepach)
